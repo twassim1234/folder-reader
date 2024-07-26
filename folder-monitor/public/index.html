@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Folder Monitor</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    #directory { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+    .folder, .file { cursor: pointer; border: 2px solid #ddd; padding: 20px; text-align: center; font-size: 18px; border-radius: 8px; }
+    .folder { background: #f5f5f5; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+    .file { background: #e0e0e0; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+    button { cursor: pointer; padding: 10px 20px; border: none; border-radius: 5px; color: #fff; font-size: 16px; margin: 5px; transition: background 0.3s ease; }
+    button:hover { opacity: 0.9; }
+    #show-more, #show-less { background: blue; }
+    #previous-button, #next-button { background: blue; }
+    .close { cursor: pointer; padding: 10px 20px; border: none; border-radius: 5px; color: #fff; background: red; font-size: 16px; margin: 10px; }
+    #file-content { display: none; flex-direction: column; align-items: center; position: relative; }
+    #navigation-buttons { position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between; }
+    img, video, iframe { max-width: 100%; max-height: 80vh; }
+    #text-content { white-space: pre-wrap; word-wrap: break-word; max-height: 80vh; overflow: auto; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Directory Contents</h1>
+    <div id="back-button" onclick="goBack()">Go Back</div>
+    <div id="directory"></div>
+    <button id="show-more" onclick="showMoreFolders()">Show More</button>
+    <button id="show-less" onclick="showLessFolders()" style="display: none;">Show Less</button>
+    
+    <div id="file-content">
+      <div id="navigation-buttons">
+        <button id="previous-button" onclick="showPrevious()" style="display: none;">Previous</button>
+        <button id="next-button" onclick="showNext()" style="display: none;">Next</button>
+      </div>
+      <span class="close" onclick="closeFileContent()">✖ Close</span>
+      <img id="image-content" src="" alt="Image" style="display: none;">
+      <video id="video-content" controls style="display: none;"></video>
+      <pre id="text-content" style="display: none;"></pre>
+      <iframe id="pdf-content" src="" style="display: none;"></iframe>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
