@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Categories - Code School Club</title>
+
+  <!-- Boxicons CDN link -->
+  <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wdth,wght,YTLC@1,6..12,87.5,500,460&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">
+      <span class="logo-word" style="color: #5151a3;">code</span>
+      <span class="logo-word" style="color: #0bb4a9;">school</span>
+      <span class="logo-word" style="color: #933494;">club</span>
+    </a>
+    
+    <form action="search.html" method="post" class="search-form">
+      <input type="text" name="search_box" required placeholder="search courses..." maxlength="100">
+      <button type="submit">
+        <i class='bx bx-search-alt-2'></i>
+      </button>
+    </form>
+
+    <ul class="navbar">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#categories">Categories</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </header>
+
+  <section class="categories" id="categories">
+    <div class="center-text">
+        <h5>Categories</h5>
+    </div>
+
+    <div class="categories content">
+        <div class="box">
+            <div id="back-button" onclick="goBack()">← Go Back</div>
+            <div id="directory"></div>
+            <div id="pagination-buttons">
+              <button id="show-more" onclick="showMoreFolders()">Show More</button>
+              <button id="show-less" onclick="showLessFolders()">Show Less</button>
+            </div>
+        </div>
+
+    </div>
+
+  
+  <div id="file-content">
+    <span class="close" onclick="closeFileContent()">✖ Close</span>
+    <img id="image-content" src="" alt="Image" style="display: none;">
+    <video id="video-content" controls style="display: none;"></video>
+    <pre id="text-content" style="display: none;"></pre>
+    <iframe id="pdf-content" src="" style="display: none;"></iframe>
+    <div id="file-counter"></div>
+    <div id="navigation-buttons">
+      <button id="previous-button" onclick="showPrevious()" style="display: none;">Previous</button>
+      <button id="next-button" onclick="showNext()" style="display: none;">Next</button>
+    </div>
+  </div>
+
+  <footer class="footer">
+    &copy; copyright @ 2024 by <span>wassim trabelsi</span> | all rights reserved!
+  </footer>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

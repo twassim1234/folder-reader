@@ -3,46 +3,202 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Folder Monitor</title>
+  <title>Code School Club</title>
+
+  <!-- Boxicons CDN link -->
+  <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="styles.css">
-  <style>
-    body { font-family: Arial, sans-serif; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-    #directory { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-    .folder, .file { cursor: pointer; border: 2px solid #ddd; padding: 20px; text-align: center; font-size: 18px; border-radius: 8px; }
-    .folder { background: #f5f5f5; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
-    .file { background: #e0e0e0; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
-    button { cursor: pointer; padding: 10px 20px; border: none; border-radius: 5px; color: #fff; font-size: 16px; margin: 5px; transition: background 0.3s ease; }
-    button:hover { opacity: 0.9; }
-    #show-more, #show-less { background: blue; }
-    #previous-button, #next-button { background: blue; }
-    .close { cursor: pointer; padding: 10px 20px; border: none; border-radius: 5px; color: #fff; background: red; font-size: 16px; margin: 10px; }
-    #file-content { display: none; flex-direction: column; align-items: center; position: relative; }
-    #navigation-buttons { position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between; }
-    img, video, iframe { max-width: 100%; max-height: 80vh; }
-    #text-content { white-space: pre-wrap; word-wrap: break-word; max-height: 80vh; overflow: auto; }
-  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Directory Contents</h1>
-    <div id="back-button" onclick="goBack()">Go Back</div>
-    <div id="directory"></div>
-    <button id="show-more" onclick="showMoreFolders()">Show More</button>
-    <button id="show-less" onclick="showLessFolders()" style="display: none;">Show Less</button>
+  <header>
+    <a href="#home" class="logo">
+      <span class="logo-word" style="color: #5151a3;">code</span>
+      <span class="logo-word" style="color: #0bb4a9;">school</span>
+      <span class="logo-word" style="color: #933494;">club</span>
+    </a>
     
-    <div id="file-content">
-      <div id="navigation-buttons">
-        <button id="previous-button" onclick="showPrevious()" style="display: none;">Previous</button>
-        <button id="next-button" onclick="showNext()" style="display: none;">Next</button>
+    <form action="search.html" method="post" class="search-form">
+      <input type="text" name="search_box" required placeholder="search courses..." maxlength="100">
+      <button type="submit">
+        <i class='bx bx-search-alt-2'></i>
+      </button>
+    </form>
+
+    <ul class="navbar">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#categories">Categories</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </header>
+
+  <section class="home" id="home">
+    <div class="home-text">
+      <h1>Welcome to Code School Club</h1>
+      <p>Accessible courses online for all. Learn at your own pace with our comprehensive courses.</p>
+      <div class="latter">
+        <form>
+          <input type="email" placeholder="Write Your Mail" required>
+          <input type="submit" value="Let's Start" required>
+        </form>
       </div>
-      <span class="close" onclick="closeFileContent()">✖ Close</span>
-      <img id="image-content" src="" alt="Image" style="display: none;">
-      <video id="video-content" controls style="display: none;"></video>
-      <pre id="text-content" style="display: none;"></pre>
-      <iframe id="pdf-content" src="" style="display: none;"></iframe>
     </div>
-  </div>
+
+    <div class="home-img">
+      <img src="../pictures/images.png" alt="Home Image">
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="container-box">
+      <div class="container-img">
+        <img src="../pictures/icons8-courses-64.png" alt="Courses Icon">
+      </div>
+      <div class="container-text">
+        <h4>500+</h4>
+        <p>online courses</p>
+      </div>
+    </div>
+
+    <div class="container-box">
+      <div class="container-img">
+        <img src="../pictures/icons8-student-48.png" alt="Student Icon">
+      </div>
+      <div class="container-text">
+        <h4>1500+</h4>
+        <p>certified students</p>
+      </div>
+    </div>
+
+    <div class="container-box">
+      <div class="container-img">
+        <img src="../pictures/icons8-diploma-48.png" alt="Diploma Icon">
+      </div>
+      <div class="container-text">
+        <h4>20+</h4>
+        <p>different certificates</p>
+      </div>
+    </div>
+  
+    <div class="container-box">
+      <div class="container-img">
+        <img src="../pictures/icons8-teach-48.png" alt="Instructor Icon">
+      </div>
+      <div class="container-text">
+        <h4>100+</h4>
+        <p>expert instructors</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="categories" id="categories">
+    <div class="center-text">
+      <h5>Categories</h5>
+    </div>
+    <div class="categories-content" id="directory"></div>
+    <div id="pagination-buttons">
+      <button id="show-more" onclick="showMoreFolders()">Show More</button>
+      <button id="show-less" onclick="showLessFolders()">Show Less</button>
+    </div>
+    <div id="file-content" class="file-content">
+      <span class="close" onclick="closeFileContent()">✖ Close</span>
+      <div id="content-view">
+        <img id="image-content" src="" alt="Image">
+        <video id="video-content" controls></video>
+        <pre id="text-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum venenatis efficitur nulla, sit amet imperdiet nisi tincidunt nec. Nullam non felis non odio efficitur tincidunt.</pre>
+        <iframe id="pdf-content"></iframe>
+      </div>
+      <div id="file-counter"></div>
+      <div id="navigation-buttons">
+        <button id="previous-button" onclick="showPrevious()">Previous</button>
+        <button id="next-button" onclick="showNext()">Next</button>
+      </div>
+    </div>
+</div>
+
+  </section>
+
+  <section class="about" id="about">
+    <div class="about-img">
+      <img src="../pictures/about.jpeg" alt="About Image">
+    </div>
+    <div class="about-text">
+      <h2>Technology club with over 6 years of experience in education</h2>
+      <p>Behind the name Code School Clubs are people who strive every day to offer children what the educational system cannot yet - education adapted to current needs.</p>
+      <a href="#" class="btn">READ MORE</a>
+    </div>
+  </section>
+  
+  <section class="contact" id="contact">
+    <div class="main-contact">
+      <div class="contact-content">
+        <img src="../pictures/images.png" alt="Logo Image">
+        <ul>
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">Twitter</a></li>
+        </ul>
+      </div>
+      <div class="contact-content">
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#categories">Categories</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="contact-content">
+        <ul>
+          <li><a href="#">Profile</a></li>
+          <li><a href="#">Login</a></li>
+          <li><a href="#">Register</a></li>
+          <li><a href="#">Instructor</a></li>
+          <li><a href="#">Dashboard</a></li>
+        </ul>
+      </div>
+      <div class="contact-content">
+        <ul>
+          <li><a href="#">Romania Iasi</a></li>
+          <li><a href="mailto:buzau@codeschoolclubs.ro">📧 buzau@codeschoolclubs.ro</a></li>
+          <li><a href="tel:+9999999999">9999999999</a></li>
+        </ul>
+      </div>
+    </div>
+  
+    <!-- New Map and Feedback Form -->
+    <div class="contact-details">
+      <div class="map">
+        <h3>Our Location</h3>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.873241882277!2d-122.4042370846809!3d37.77492927975919!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085808e9d671a8d%3A0x5f6d601b8f45e885!2sSan%20Francisco%2C%20CA!5e0!3m2!1sen!2sus!4v1627894567890!5m2!1sen!2sus" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+      <div class="feedback-form">
+        <h3>Send Us Your Feedback</h3>
+        <form action="submit-feedback.php" method="post">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required>
+  
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required>
+  
+          <label for="message">Message:</label>
+          <textarea id="message" name="message" rows="4" required></textarea>
+  
+          <button type="submit">Send Feedback</button>
+        </form>
+      </div>
+    </div>
+  </section>
+  
+
+  <footer class="footer">
+    &copy; copyright @ 2024 by <span>wassim trabelsi</span> | all rights reserved!
+  </footer>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="script.js"></script>

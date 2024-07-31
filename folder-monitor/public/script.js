@@ -1,5 +1,5 @@
 const socket = io();
-let currentPath = '';
+let currentPath = '/';
 let currentFiles = [];
 let currentIndex = 0;
 let allFolders = [];
@@ -24,49 +24,50 @@ const displayDirectory = (data) => {
     isFileView = false;
     showFolders(allFolders);
   }
+
+  // Show or hide the "Go Back" button based on path history
+  document.getElementById('back-button').style.display = pathHistory.length > 0 ? 'block' : 'none';
 };
 
-// Function to display folders with pagination
 const showFolders = (folders) => {
-  let foldersToShow = allFoldersShown ? folders : folders.slice(startIndex, startIndex + foldersPerPage);
+  let foldersToShow = allFoldersShown ? folders : folders.slice(0, foldersPerPage);
 
   document.getElementById('directory').innerHTML = foldersToShow.map(folder =>
     `<div class="folder" data-name="${folder.name}">${folder.name}</div>`
   ).join('\n');
 
   // Show or hide the "Show More" and "Show Less" buttons based on folder count
-  if (folders.length > foldersPerPage) {
-    document.getElementById('show-more').style.display = allFoldersShown || folders.length <= startIndex + foldersPerPage ? 'none' : 'block';
-    document.getElementById('show-less').style.display = allFoldersShown ? 'block' : 'none';
-  } else {
-    document.getElementById('show-more').style.display = 'none';
-    document.getElementById('show-less').style.display = 'none';
-  }
+  const showMoreButton = document.getElementById('show-more');
+  const showLessButton = document.getElementById('show-less');
+  const paginationButtons = document.getElementById('pagination-buttons');
+
+  paginationButtons.style.display = folders.length > foldersPerPage ? 'block' : 'none';
+  showMoreButton.style.display = !allFoldersShown && folders.length > foldersPerPage ? 'block' : 'none';
+  showLessButton.style.display = allFoldersShown && folders.length > foldersPerPage ? 'block' : 'none';
 
   document.getElementById('file-content').style.display = 'none'; // Hide file content
   document.getElementById('directory').style.display = 'grid'; // Show folders
-  document.getElementById('next-button').style.display = 'none'; // Hide navigation buttons
-  document.getElementById('previous-button').style.display = 'none'; // Hide navigation buttons
-  document.getElementById('show-more').style.display = allFolders.length > foldersPerPage ? 'block' : 'none'; // Show Show More button if applicable
-  document.getElementById('show-less').style.display = allFoldersShown ? 'block' : 'none'; // Show Show Less button if applicable
   addFolderEventListeners();
 };
+
 
 // Function to display files
 const showFiles = (files) => {
   document.getElementById('directory').innerHTML = files.map(item =>
     `<div class="file" data-name="${item.name}">${item.name}</div>`
   ).join('\n');
+
+  // Hide pagination buttons
+  document.getElementById('pagination-buttons').style.display = 'none';
   document.getElementById('file-content').style.display = 'flex'; // Show file content
   document.getElementById('directory').style.display = 'none'; // Hide folders
   document.getElementById('next-button').style.display = files.length > 1 ? 'block' : 'none'; // Show navigation buttons if multiple files
   document.getElementById('previous-button').style.display = files.length > 1 ? 'block' : 'none'; // Show navigation buttons if multiple files
-  document.getElementById('show-more').style.display = 'none'; // Hide Show More button
-  document.getElementById('show-less').style.display = 'none'; // Hide Show Less button
   addFileEventListeners();
 
   // Automatically open the first file if available
   if (files.length > 0) {
+    currentIndex = 0; // Reset index to 0 when showing new files
     fetchFile(files[0].name);
   }
 };
@@ -114,14 +115,17 @@ const fetchFile = (fileName) => {
   document.getElementById('image-content').style.display = 'none';
   document.getElementById('video-content').style.display = 'none';
 
-  if (['txt'].includes(ext)) {
-    fetch(fileUrl)
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('text-content').textContent = data;
-        document.getElementById('text-content').style.display = 'block';
-      });
-  } else if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) {
+  // Update and show the file counter
+  const fileCounter = document.getElementById('file-counter');
+  fileCounter.textContent = `${currentIndex + 1}/${currentFiles.length}`;
+  fileCounter.style.display = 'block';
+
+  if (['txt', 'json', 'js', 'html', 'css', 'py', 'md'].includes(ext)) {
+    fetch(fileUrl).then(response => response.text()).then(content => {
+      document.getElementById('text-content').textContent = content;
+      document.getElementById('text-content').style.display = 'block';
+    });
+  } else if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(ext)) {
     document.getElementById('image-content').src = fileUrl;
     document.getElementById('image-content').style.display = 'block';
   } else if (['mp4', 'webm'].includes(ext)) {
@@ -133,6 +137,18 @@ const fetchFile = (fileName) => {
   } else {
     alert('Unsupported file type');
   }
+};
+
+// Function to handle "Show More" button click
+const showMoreFolders = () => {
+  allFoldersShown = true;
+  showFolders(allFolders);
+};
+
+// Function to handle "Show Less" button click
+const showLessFolders = () => {
+  allFoldersShown = false;
+  showFolders(allFolders);
 };
 
 // Show previous file in the list
@@ -151,7 +167,18 @@ const showNext = () => {
   }
 };
 
-// Close file content and show directory
+// Go back to the previous directory
+const goBack = () => {
+  if (pathHistory.length > 0) {
+    currentPath = pathHistory.pop(); // Go back to the previous path
+    fetchDirectory(currentPath);
+  } else {
+    // If no history, return to the root or initial directory
+    fetchDirectory('/');
+  }
+};
+
+// Close file content and go back to directory view
 const closeFileContent = () => {
   document.getElementById('file-content').style.display = 'none';
   const video = document.getElementById('video-content');
@@ -164,35 +191,14 @@ const closeFileContent = () => {
   document.getElementById('pdf-content').src = '';
   document.getElementById('text-content').textContent = '';
 
+  // Reset the file index counter
+  currentIndex = 0;
+
   if (pathHistory.length > 0) {
     currentPath = pathHistory.pop(); // Go back to the previous path
     fetchDirectory(currentPath);
   } else {
     // If no history, return to the root or initial directory
-    fetchDirectory('/');
-  }
-};
-
-// Show more folders
-const showMoreFolders = () => {
-  allFoldersShown = true;
-  fetchDirectory(currentPath);
-};
-
-// Show less folders
-const showLessFolders = () => {
-  allFoldersShown = false;
-  startIndex = 0; // Reset start index to show the first page of folders
-  fetchDirectory(currentPath);
-};
-
-// Go back function
-const goBack = () => {
-  if (pathHistory.length > 0) {
-    currentPath = pathHistory.pop(); // Go back to the previous path
-    fetchDirectory(currentPath);
-  } else {
-    // If at root, or no history, just re-fetch the root directory
     fetchDirectory('/');
   }
 };
@@ -212,4 +218,23 @@ socket.on('update-file', data => {
   if (data.path === currentFiles[currentIndex]?.name) {
     fetchFile(data.path); // Re-fetch the file to update content
   }
+});
+
+const header = document.querySelector("header");
+window.addEventListener("scroll",function() {
+  header.classList.toggle("sticky",window.scrollY > 0);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggle = document.getElementById('sidebar-toggle');
+  const sidebarClose = document.getElementById('sidebar-close');
+
+  sidebarToggle.addEventListener('click', function() {
+    sidebar.style.right = sidebar.style.right === '0px' ? '-300px' : '0px';
+  });
+
+  sidebarClose.addEventListener('click', function() {
+    sidebar.style.right = '-300px';
+  });
 });
